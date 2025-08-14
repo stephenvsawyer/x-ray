@@ -33,6 +33,34 @@ if (-not $principal.IsInRole([Security.Principal.WindowsBuiltinRole]::Administra
 # --- helpers ------------------------------------------------------------------
 try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 } catch { }
 
+function Test-NetworkConnectivity {
+    param([string[]]$TestUrls = @('github.com', 'google.com'))
+    
+    Write-Host "Checking network connectivity..."
+    foreach ($url in $TestUrls) {
+        try {
+            $result = Test-NetConnection -ComputerName $url -Port 443 -InformationLevel Quiet -WarningAction SilentlyContinue
+            if ($result) {
+                Write-Host "✓ Network connectivity verified ($url)"
+                return $true
+            }
+        } catch { }
+    }
+    
+    # Fallback test using System.Net.NetworkInformation
+    try {
+        $ping = New-Object System.Net.NetworkInformation.Ping
+        $result = $ping.Send('8.8.8.8', 3000)
+        if ($result.Status -eq 'Success') {
+            Write-Host "✓ Network connectivity verified (DNS)"
+            return $true
+        }
+    } catch { }
+    
+    Write-Warning "Network connectivity test failed. Downloads may not work."
+    return $false
+}
+
 # Test network connectivity before proceeding
 if (-not (Test-NetworkConnectivity)) {
     $response = Read-Host "Network connectivity issues detected. Continue anyway? (y/N)"
@@ -89,34 +117,6 @@ function Uninstall-ChromeFromSetup {
     if ($SystemLevel) { $args += '--system-level' }
     Write-Host "Uninstalling via: $SetupPath $($args -join ' ')"
     Start-Process -FilePath $SetupPath -ArgumentList $args -Wait -NoNewWindow
-}
-
-function Test-NetworkConnectivity {
-    param([string[]]$TestUrls = @('github.com', 'google.com'))
-    
-    Write-Host "Checking network connectivity..."
-    foreach ($url in $TestUrls) {
-        try {
-            $result = Test-NetConnection -ComputerName $url -Port 443 -InformationLevel Quiet -WarningAction SilentlyContinue
-            if ($result) {
-                Write-Host "✓ Network connectivity verified ($url)"
-                return $true
-            }
-        } catch { }
-    }
-    
-    # Fallback test using System.Net.NetworkInformation
-    try {
-        $ping = New-Object System.Net.NetworkInformation.Ping
-        $result = $ping.Send('8.8.8.8', 3000)
-        if ($result.Status -eq 'Success') {
-            Write-Host "✓ Network connectivity verified (DNS)"
-            return $true
-        }
-    } catch { }
-    
-    Write-Warning "Network connectivity test failed. Downloads may not work."
-    return $false
 }
 
 function Backup-RegistryKeys {
