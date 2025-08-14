@@ -7,7 +7,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # Customize if needed:
-$BundleUrl   = 'https://github.com/stephenvsawyer/x-ray-chrome/releases/download/1.0/GoogleChromeEnterpriseBundle64.zip'
+$BundleUrl   = 'https://github.com/stephenvsawyer/xray-chrome/releases/download/1.0/GoogleChromeEnterpriseBundle64.zip'
 $TempZip     = Join-Path $env:TEMP 'GoogleChromeEnterpriseBundle64.zip'
 $ExtractDir  = Join-Path $env:TEMP 'GoogleChromeEnterpriseBundle64'
 $PolicyRoot  = 'HKLM:\SOFTWARE\Policies\Google'
