@@ -4,9 +4,9 @@ PowerShell scripts to lock down Google Chrome on dedicated X-ray machines (disab
 
 ## Files
 
-* **Lockdown script:** [`lockdown-xray-chrome.ps1`](https://github.com/stephenvsawyer/x-ray-chrome/blob/main/lockdown-xray-chrome.ps1)
-* **Undo script:** [`undo-lockdown-xray-chrome.ps1`](https://github.com/stephenvsawyer/x-ray-chrome/blob/main/undo-lockdown-xray-chrome.ps1)
-* **Chrome bundle (release asset):** [Releases](https://github.com/stephenvsawyer/x-ray-chrome/releases)
+* **Lockdown script:** [`lockdown-xray-chrome.ps1`](https://github.com/stephenvsawyer/xray-chrome/blob/main/lockdown-xray-chrome.ps1)
+* **Undo script:** [`undo-lockdown-xray-chrome.ps1`](https://github.com/stephenvsawyer/xray-chrome/blob/main/undo-lockdown-xray-chrome.ps1)
+* **Chrome bundle (release asset):** [Releases](https://github.com/stephenvsawyer/xray-chrome/releases)
 
 ## Quick start (Windows, run as Admin)
 
