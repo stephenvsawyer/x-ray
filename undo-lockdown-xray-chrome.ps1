@@ -30,23 +30,29 @@ $PolicyDefinitions  = Join-Path $env:WINDIR 'PolicyDefinitions'
 
 function Remove-SubKeyIfEmpty {
     param([Parameter(Mandatory)][string]$KeyPath)
-    if (Test-Path $KeyPath) {
-        $subkeys   = (Get-ChildItem -Path $KeyPath -ErrorAction SilentlyContinue)
-        $props     = (Get-ItemProperty -Path $KeyPath -ErrorAction SilentlyContinue | Get-Member -MemberType NoteProperty | Select-Object -ExpandProperty Name)
-        if (($subkeys | Measure-Object).Count -eq 0 -and ($props | Measure-Object).Count -eq 0) {
-            Remove-Item -Path $KeyPath -Force
-        }
+    if (-not (Test-Path $KeyPath)) { return }
+    $key = Get-Item -Path $KeyPath -ErrorAction SilentlyContinue
+    $subkeysCount = @(Get-ChildItem -Path $KeyPath -ErrorAction SilentlyContinue).Count
+    $valuesCount = 0
+    if ($key) {
+        try {
+            $valuesCount = @($key.GetValueNames()).Count
+        } catch { $valuesCount = 0 }
+    }
+    if ($subkeysCount -eq 0 -and $valuesCount -eq 0) {
+        Remove-Item -Path $KeyPath -Force -ErrorAction SilentlyContinue
     }
 }
 
 function Safe-RemoveValue {
     param([Parameter(Mandatory)][string]$Path, [Parameter(Mandatory)][string]$Name)
-    if (Test-Path $Path) {
-        $item = Get-ItemProperty -Path $Path -ErrorAction SilentlyContinue
-        if ($null -ne $item.$Name) {
+    if (-not (Test-Path $Path)) { return }
+    try {
+        $key = Get-Item -Path $Path -ErrorAction Stop
+        if (($key.GetValueNames()) -contains $Name) {
             Remove-ItemProperty -Path $Path -Name $Name -Force -ErrorAction SilentlyContinue
         }
-    }
+    } catch { }
 }
 
 function Remove-ListPolicyKey {
@@ -66,8 +72,7 @@ if (Test-Path $UpdateRoot) {
 # Remove per-app override for Chrome
 if (Test-Path $ChromeAppKey) {
     Safe-RemoveValue -Path $ChromeAppKey -Name 'UpdateDefault'
-    # If Applications\{GUID} is now empty, remove it
-    Remove-SubKeyIfEmpty -KeyPath $ChromeAppKey
+    Remove-SubKeyIfEmpty -KeyPath $ChromeAppKey  # If Applications\{GUID} is now empty, remove it
 }
 # If Update key is empty, remove it
 Remove-SubKeyIfEmpty -KeyPath $UpdateRoot
@@ -90,6 +95,9 @@ if (Test-Path $ChromeRoot) {
     Remove-SubKeyIfEmpty -KeyPath $ChromeRoot
 }
 
+# If Google policy root became empty, remove it too (keeps registry tidy)
+Remove-SubKeyIfEmpty -KeyPath $PolicyRoot
+
 Write-Host "Restoring Google Update services to defaults..."
 # Defaults: gupdate = Automatic (Delayed Start), gupdatem = Manual
 $services = @(
@@ -106,8 +114,8 @@ foreach ($svc in $services) {
             if (Test-Path $svcReg) {
                 New-ItemProperty -Path $svcReg -Name 'DelayedAutostart' -PropertyType DWord -Value $svc.Delayed -Force | Out-Null
             }
-            if ($svc.StartNow) {
-                if ($s.Status -ne 'Running') { Start-Service -Name $svc.Name -ErrorAction SilentlyContinue }
+            if ($svc.StartNow -and $s.Status -ne 'Running') {
+                Start-Service -Name $svc.Name -ErrorAction SilentlyContinue
             }
         } catch {
             Write-Warning "Could not adjust service $($svc.Name): $($_.Exception.Message)"
@@ -123,7 +131,7 @@ $taskNames = @('GoogleUpdateTaskMachineCore','GoogleUpdateTaskMachineUA')
 foreach ($tn in $taskNames) {
     try { Enable-ScheduledTask -TaskName $tn -ErrorAction Stop | Out-Null } catch { }
 }
-# Enable any other GoogleUpdate* tasks if present
+# Enable any other GoogleUpdate* tasks if present (any path)
 Get-ScheduledTask -ErrorAction SilentlyContinue | Where-Object {
     $_.TaskName -like 'GoogleUpdate*'
 } | ForEach-Object {
