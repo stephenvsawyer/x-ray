@@ -1,0 +1,46 @@
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# PowerShell
+*.ps1xml
+*.psc1
+*.pssc
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.swo
+*~
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# Backup files
+*.backup
+*-backup.*
+backup-*
+
+# Registry backup files (exclude from repo)
+*registry-backup*
