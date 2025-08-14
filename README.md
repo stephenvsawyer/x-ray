@@ -50,9 +50,9 @@ Medical imaging systems often require web browsers for local applications while 
 ## Screenshots
 
 **Lockdown process**
-![Lockdown process](https://github.com/stephenvsawyer/xray-chrome/blob/main/xray-chrome.png?raw=1)
+![Lockdown process](https://github.com/stephenvsawyer/xray-chrome/blob/main/lockdown-new.png?raw=1)
 
 **Reversal process**
-![Reversal process](https://github.com/stephenvsawyer/xray-chrome/blob/main/xray-reversal-chrome.png?raw=1)
+![Reversal process](https://github.com/stephenvsawyer/xray-chrome/blob/main/revert-new.png?raw=1)
 
 > Tested on **Windows 10 Enterprise LTSC** and **Windows 11**. Requires elevated PowerShell prompt.
