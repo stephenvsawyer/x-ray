@@ -1,4 +1,4 @@
-# xray-chrome
+# xray-chrome fix scripts
 
 PowerShell scripts to secure Chrome browsers on dedicated medical X-ray workstations by restricting network access to localhost and preventing unauthorized updates.
 
