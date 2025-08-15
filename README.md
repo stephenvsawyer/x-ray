@@ -5,6 +5,7 @@ PowerShell scripts to secure Chrome browsers on dedicated medical X-ray workstat
 ## Purpose
 
 Medical imaging systems often require web browsers for local applications while maintaining strict security. This tool:
+
 - Locks Chrome to localhost-only access (blocks internet browsing)
 - Prevents automatic updates that could break medical software compatibility
 - Uses enterprise policies for reliable, tamper-resistant restrictions
@@ -12,9 +13,9 @@ Medical imaging systems often require web browsers for local applications while 
 
 ## Files
 
-* **Lockdown script:** [`lockdown-xray-chrome.ps1`](https://github.com/stephenvsawyer/x-ray-chrome/blob/main/lockdown-xray-chrome.ps1) - Applies security restrictions
-* **Undo script:** [`undo-lockdown-xray-chrome.ps1`](https://github.com/stephenvsawyer/x-ray-chrome/blob/main/undo-lockdown-xray-chrome.ps1) - Completely reverses lockdown
-* **Chrome installer:** [Releases](https://github.com/stephenvsawyer/x-ray-chrome/releases) - Specific tested Chrome version
+- **Lockdown script:** [`lockdown-xray-chrome.ps1`](https://github.com/stephenvsawyer/x-ray-chrome/blob/main/lockdown-xray-chrome.ps1) - Applies security restrictions
+- **Undo script:** [`undo-lockdown-xray-chrome.ps1`](https://github.com/stephenvsawyer/x-ray-chrome/blob/main/undo-lockdown-xray-chrome.ps1) - Completely reverses lockdown
+- **Chrome installer:** [Releases](https://github.com/stephenvsawyer/x-ray-chrome/releases) - Specific tested Chrome version
 
 ## Quick Start
 
@@ -35,6 +36,7 @@ Medical imaging systems often require web browsers for local applications while 
 ## What It Does
 
 **Lockdown process:**
+
 - Uninstalls existing Chrome installations
 - Installs specific Chrome version (138.0.7204.184)
 - Applies enterprise URL allowlist (localhost only)
@@ -42,6 +44,7 @@ Medical imaging systems often require web browsers for local applications while 
 - Installs ADMX policy templates for management
 
 **Undo process:**
+
 - Removes all applied policies and restrictions
 - Installs latest Chrome via winget
 - Re-enables update mechanisms
